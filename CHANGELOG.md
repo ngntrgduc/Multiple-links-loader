@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  -->
 
-## [[v0.3.3](https://github.com/ngntrgduc/Multiple-links-loader/releases/tag/v0.3.3)]
+## [[v0.3.3](https://github.com/ngntrgduc/Multiple-links-loader/releases/tag/0.3.3)]
 
 Firefox
 

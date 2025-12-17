@@ -4,29 +4,21 @@ const delayInput = document.getElementById('delay');
 const limitInput = document.getElementById('limit');
 
 function loadOptions() {
-    browser.storage.local.get('links', (data) => {
+    browser.storage.local.get(['links', 'delay', 'limit'], (data) => {
         if (data.links) {
             optionsTextArea.value = data.links.join('\n');
         }
-    });
 
-    function setDefaultValue(inputElement) {
-        inputElement.value = inputElement.defaultValue;
-    }
-
-    browser.storage.local.get('delay', (data) => {
-        if (data.delay) {
+        if (data.delay >= 0) {
             delayInput.value = data.delay;
         } else {
-            setDefaultValue(delayInput);
+            delayInput.value = delayInput.defaultValue;
         }
-    });
 
-    browser.storage.local.get('limit', (data) => {
-        if (data.limit) {
+        if (data.limit >= 0) {
             limitInput.value = data.limit;
         } else {
-            setDefaultValue(limitInput);
+            limitInput.value = limitInput.defaultValue;
         }
     });
 }
@@ -40,10 +32,8 @@ function getLinks() {
 }
 
 function getValue(inputElement) {
-    if (inputElement.checkValidity()) {
-        return inputElement.valueAsNumber;
-    }
-    return parseInt(inputElement.defaultValue);
+    const value = inputElement.valueAsNumber;
+    return Number.isFinite(value) ? value : Number(inputElement.defaultValue);
 } 
 
 function getDelay() {

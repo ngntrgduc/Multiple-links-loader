@@ -39,21 +39,27 @@ async function getDelay() {
 
 async function openTabsInGroup(group, inBackground = false) {
     const links = Array.from(group.getElementsByTagName('a'));
+    const activeLinks = links.filter(
+        link => !link.classList.contains('ignore')
+    );
 
     try {
         const [limit, delay] = await Promise.all([getLimit(), getDelay()]);
         const delayMs = delay * 1000;
-        const shouldDelay = links.length > limit;            
+        const shouldDelay = activeLinks.length > limit;
 
-        for (let i = 0; i < links.length; i++) {
-            const link = links[i];
-            if (link.classList.contains('ignore')) continue;
+        for (let i = 0; i < activeLinks.length; i++) {
+            const link = activeLinks[i];
 
             if (shouldDelay && i > 0) {
                 await new Promise(resolve => setTimeout(resolve, delayMs));
             }
 
-            await browser.tabs.create({ url: link.href, active: !inBackground });
+            await browser.tabs.create({
+                url: link.href,
+                // opening delayed tabs in background to avoid focus stealing
+                active: !(inBackground || shouldDelay)
+            });
         }
     } catch (error) {
         console.error('Error retrieving data:', error);

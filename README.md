@@ -56,5 +56,7 @@ Furthermore, you can also open tabs in background by `Middle click` on group nam
 ## Contributing
 If you found a bug or want to contribute, feel free to open an issue/pull requests. All contributions are welcomed.
 
+See [TODO.md](/TODO.md) for more details.
+
 ## Coffee
 If you like this project and you want to support me, you can [buy me a coffee :coffee:](https://ko-fi.com/ngntrgduc). Thank you very much 💖.

@@ -42,23 +42,18 @@ async function openTabsInGroup(group, inBackground = false) {
 
     try {
         const [limit, delay] = await Promise.all([getLimit(), getDelay()]);
-        const delayInMilisecond = delay * 1000
-        if (links.length > limit) {
-            links.forEach((link, index) => {
-                setTimeout(() => {
-                    if (!link.classList.contains('ignore')) {
-                        if (!inBackground) browser.tabs.create({ url: link.href });
-                        else browser.tabs.create({ url: link.href, active: false }); 
-                    }
-                }, index * (delayInMilisecond));
-            });
-        } else {
-            links.forEach((link) => {
-                if (!link.classList.contains('ignore')) {
-                    if (!inBackground) browser.tabs.create({ url: link.href })
-                    else browser.tabs.create({ url: link.href, active: false }); 
-                }
-            });
+        const delayMs = delay * 1000;
+        const shouldDelay = links.length > limit;            
+
+        for (let i = 0; i < links.length; i++) {
+            const link = links[i];
+            if (link.classList.contains('ignore')) continue;
+
+            if (shouldDelay && i > 0) {
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+
+            await browser.tabs.create({ url: link.href, active: !inBackground });
         }
     } catch (error) {
         console.error('Error retrieving data:', error);
@@ -88,7 +83,7 @@ browser.storage.local.get('links', (data) => {
                         openTabsInGroup(group);
                     } else if (event.button === 1) { // Middle Click: Open tabs in background
                         event.preventDefault();
-                        openTabsInGroup(group, inBackground = true);
+                        openTabsInGroup(group, true);
                     }
                 });
                 group.appendChild(groupName);
